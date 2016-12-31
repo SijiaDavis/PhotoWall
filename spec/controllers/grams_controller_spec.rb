@@ -51,7 +51,18 @@ RSpec.describe GramsController, type: :controller do
       expect(response).to have_http_status(:unprocessable_entity)
       expect(Gram.count).to eq 0
     end
+  end
+  
+  describe "grams#show action" do
+    it "should successfuly show the post if it can be found" do
+      gram = FactoryGirl.create(:gram)
+      get :show, id: gram.id
+      expect(response).to have_http_status(:success)
+    end
     
-    
+    it "should return a 404 status code if the post is not found" do
+      get :show, id: 'celia'
+      expect(response).to have_http_status(:not_found)
+    end
   end
 end

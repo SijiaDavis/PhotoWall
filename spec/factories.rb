@@ -9,4 +9,9 @@ FactoryGirl.define do
     password "welcome"
     password_confirmation "welcome"
   end
+  
+  factory :gram do
+    message "sup!"
+    association :user
+  end
 end
