@@ -15,11 +15,7 @@ RSpec.describe GramsController, type: :controller do
     end
     
     it "should sucessfully show the new form if the user is signed in" do
-      user = User.create(
-        email: 'fakeuser@gmail.com',
-        password: 'welcome',
-        password_confirmation: 'welcome'
-      )
+      user = FactoryGirl.create(:user)
       sign_in user
       
       get :new
@@ -36,11 +32,7 @@ RSpec.describe GramsController, type: :controller do
     
     
     it "should successfully create a new post in the db if the user is signed in" do
-      user = User.create(
-        email: 'fakeuser@gmail.com',
-        password: 'welcome',
-        password_confirmation: 'welcome'
-      )
+      user = FactoryGirl.create(:user)
       sign_in user
       
       post :create, gram: {message: 'sup!'}
@@ -52,11 +44,7 @@ RSpec.describe GramsController, type: :controller do
     end
     
     it "should properly handle the case when the post has an empty message" do
-      user = User.create(
-        email: 'fakeuser@gmail.com',
-        password: 'welcome',
-        password_confirmation: 'welcome'
-      )
+      user = FactoryGirl.create(:user)
       sign_in user
       
       post :create, gram: {message: ''}
