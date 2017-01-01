@@ -67,11 +67,23 @@ RSpec.describe GramsController, type: :controller do
   end
   
   describe "grams#edit action" do
-    it "should sucessfully show the edit form if the post can be found" do
+    it "should not let unauthenticated user edit posts" do
+      gram = FactoryGirl.create(:gram)
+      get :edit, id: gram.id 
+      expect(response).to redirect_to new_user_session_path
+    end
+    
+    it "should not let a user who didn't create this post edit it" do
+      gram = FactoryGirl.create(:gram)
       user = FactoryGirl.create(:user)
       sign_in user
-      
+      get :edit, id: gram.id 
+      expect(response).to have_http_status(:forbidden)
+    end
+    
+    it "should sucessfully show the edit form if the post can be found" do
       gram = FactoryGirl.create(:gram)
+      sign_in gram.user
       get :edit, id: gram.id
       expect(response).to have_http_status(:success)      
     end
@@ -86,8 +98,24 @@ RSpec.describe GramsController, type: :controller do
   end
   
   describe "grams#update action" do
+    it "should not let unauthenticated user update a post" do
+      gram = FactoryGirl.create(:gram, message: "Initial Value")
+      patch :update, id: gram.id, gram: {message: "Changed"}
+      expect(response).to redirect_to new_user_session_path
+    end
+    
+    it "should not let user who didn't create the post update it" do
+      gram = FactoryGirl.create(:gram, message: "Initial Value")
+      user = FactoryGirl.create(:user)
+      sign_in user
+      patch :update, id: gram.id, gram: {message: "Changed"}
+      expect(response).to have_http_status(:forbidden)
+    end
+    
     it "should sucessfully update the post if the post can be found" do
       gram = FactoryGirl.create(:gram, message: "Initial Value")
+      sign_in gram.user
+      
       patch :update, id: gram.id, gram: {message: "Changed"}
       expect(response).to redirect_to root_path
       
@@ -96,12 +124,15 @@ RSpec.describe GramsController, type: :controller do
     end
     
     it "should return a 404 status code if the post is not found" do
+      user = FactoryGirl.create(:user)
+      sign_in user
       patch :update, id: "celia", gram: {message: "Changed"}
       expect(response).to have_http_status(:not_found)
     end
     
     it "should render the edit form with a http status of unprocessable_entity" do
       gram = FactoryGirl.create(:gram, message: "Initial Value")
+      sign_in gram.user
       patch :update, id: gram.id, gram: {message: ""}
       expect(response).to have_http_status(:unprocessable_entity)
       gram.reload
@@ -110,8 +141,24 @@ RSpec.describe GramsController, type: :controller do
   end
   
   describe "grams#destroy action" do
+    it "should not let unauthenticated user destroy a post" do
+      gram = FactoryGirl.create(:gram)
+      delete :destroy, id: gram.id 
+      expect(response).to redirect_to new_user_session_path
+    end
+    
+    it "should not let user who didn't create this post destroy it" do
+      gram = FactoryGirl.create(:gram)
+      user = FactoryGirl.create(:user)
+      sign_in user
+      
+      delete :destroy, id: gram.id 
+      expect(response).to have_http_status(:forbidden)
+    end
+    
     it "should successfully destroy the post if it can be found" do
       gram = FactoryGirl.create(:gram)
+      sign_in gram.user
       delete :destroy, id: gram.id 
       expect(response).to redirect_to root_path
       gram = Gram.find_by_id(gram.id)
@@ -119,6 +166,8 @@ RSpec.describe GramsController, type: :controller do
     end
     
     it "should return a 404 status code if the post can not be found" do
+      user = FactoryGirl.create(:user)
+      sign_in user
       delete :destroy, id: "celia"
       expect(response).to have_http_status(:not_found) 
     end
