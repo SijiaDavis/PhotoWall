@@ -54,7 +54,7 @@ RSpec.describe GramsController, type: :controller do
   end
   
   describe "grams#show action" do
-    it "should successfuly show the post if it can be found" do
+    it "should successfully show the post if it can be found" do
       gram = FactoryGirl.create(:gram)
       get :show, id: gram.id
       expect(response).to have_http_status(:success)
@@ -63,6 +63,49 @@ RSpec.describe GramsController, type: :controller do
     it "should return a 404 status code if the post is not found" do
       get :show, id: 'celia'
       expect(response).to have_http_status(:not_found)
+    end
+  end
+  
+  describe "grams#edit action" do
+    it "should sucessfully show the edit form if the post can be found" do
+      user = FactoryGirl.create(:user)
+      sign_in user
+      
+      gram = FactoryGirl.create(:gram)
+      get :edit, id: gram.id
+      expect(response).to have_http_status(:success)      
+    end
+    
+    it "should return a 404 status code if the post is not found" do
+      user = FactoryGirl.create(:user)
+      sign_in user
+      
+      get :edit, id: 'celia'
+      expect(response).to have_http_status(:not_found)
+    end
+  end
+  
+  describe "grams#update action" do
+    it "should sucessfully update the post if the post can be found" do
+      gram = FactoryGirl.create(:gram, message: "Initial Value")
+      patch :update, id: gram.id, gram: {message: "Changed"}
+      expect(response).to redirect_to root_path
+      
+      gram.reload
+      expect(gram.message).to eq("Changed")
+    end
+    
+    it "should return a 404 status code if the post is not found" do
+      patch :update, id: "celia", gram: {message: "Changed"}
+      expect(response).to have_http_status(:not_found)
+    end
+    
+    it "should render the edit form with a http status of unprocessable_entity" do
+      gram = FactoryGirl.create(:gram, message: "Initial Value")
+      patch :update, id: gram.id, gram: {message: ""}
+      expect(response).to have_http_status(:unprocessable_entity)
+      gram.reload
+      expect(gram.message).to eq("Initial Value")
     end
   end
 end
