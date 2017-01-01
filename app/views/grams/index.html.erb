@@ -5,10 +5,11 @@
     <div class="handle"><%= gram.user.email %></div>
     <%= image_tag gram.picture, class: 'img-fluid' %>
     <br />
+    <br />
     <p>
       <%= gram.message %>
     </p>
-    <br />
+
     <div class="gram-actions float-xs-right">
       <% if current_user && current_user == gram.user %>
         <%= link_to "Edit", edit_gram_path(gram) %>
