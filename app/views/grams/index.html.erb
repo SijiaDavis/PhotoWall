@@ -4,10 +4,11 @@
   <div class="card">
     <div class="handle"><%= gram.user.email %></div>
     <%= image_tag gram.picture, class: 'img-fluid' %>
+    <br />
     <p>
       <%= gram.message %>
     </p>
-    
+    <br />
     <div class="gram-actions float-xs-right">
       <% if current_user && current_user == gram.user %>
         <%= link_to "Edit", edit_gram_path(gram) %>
@@ -28,6 +29,10 @@
           <%= comment.message %>
         </div>
       <% end %>
+      
+      <br />
+      <br />
+      
       
       <h4>Add a comment</h4>
       <%= simple_form_for Comment.new, url: gram_comments_path(gram) do |f| %>

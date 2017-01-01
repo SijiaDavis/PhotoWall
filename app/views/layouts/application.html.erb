@@ -19,7 +19,6 @@
       </div>
       <div class="add float-xs-right">
         <% if current_user %>
-          Welcome, <%= current_user.email %>.
           <%= link_to "New Post", new_gram_path %>
           <%= link_to "Sign out", destroy_user_session_path, method: :delete %>
         <% else %>
