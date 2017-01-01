@@ -1,8 +1,11 @@
-<h1>Create new post</h1>
+<div class="col-xs-10 offset-xs-1 col-sm-8 offset-sm-2 col-md-6 offset-md-3 card form">
+  
+<h1>New Post</h1>
 
 <%= simple_form_for @gram do |f| %>
   <%= f.input :message %>
   <%= f.input :picture %>
-  <%= f.submit "Post" %>
+  <%= f.submit "Post", class: 'my-btn' %>
 <% end %>
-  
+
+</div>

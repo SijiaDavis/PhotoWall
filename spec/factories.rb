@@ -1,4 +1,7 @@
 FactoryGirl.define do
+  factory :comment do
+    
+  end
   factory :user do
     # Validations prevent two users from having the same email. 
     # The sequence will ensure that if we build multiple users they 
